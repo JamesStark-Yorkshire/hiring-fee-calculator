@@ -1,0 +1,18 @@
+#!/usr/bin/env php
+<?php
+
+use Lendable\Interview\Main;
+
+require_once dirname(__DIR__).'/vendor/autoload.php';
+
+/**
+ * Please note that you CAN modify this file in any way to suit your needs, but be advised that it MUST conform to
+ * the contract specified in the README of the test.
+ */
+
+$amountString = $argv[1] ?? '';
+$termString = $argv[2] ?? '';
+
+$main = new Main(new \League\CLImate\CLImate, new \Lendable\Interview\Classes\Calculator);
+$main->main($amountString, $termString);
+

@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+command -v git >/dev/null 2>&1 ||
+{ echo >&2 "You need git installed to run this script";
+  exit 0
+}
+
+command -v tar >/dev/null 2>&1 ||
+{ echo >&2 "You need tar installed to run this script";
+  exit 0
+}
+
+if [[ ! -f "bin/calculate-fee" ]]; then
+  cat >&2 <<EOF
+Error: Required file 'bin/calculate-fee' is missing.
+
+Please make sure the 'bin/calculate-fee' script is present in
+the correct directory or that you are running this script from the project root.
+
+The 'bin' folder MUST be at the root of your submission project. Please
+do not move the folder to another sub directory and/or package your solution
+inside another directory.
+
+Please refer to the README documentation on how to submit your test.
+
+Exiting...
+EOF
+  exit 1
+fi
+
+if [[ ! -f "composer.json" ]]; then
+  cat >&2 <<EOF
+Error: Required file 'composer.json' is missing.
+
+Please make sure the 'composer.json' file is present in
+the correct directory or that you are running this script from the project root.
+
+The 'composer.json' file MUST be at the root of your submission project. Please
+do not move the file to another sub directory and/or package your solution
+inside another directory.
+
+Please refer to the README documentation on how to submit your test.
+
+Exiting...
+EOF
+  exit 1
+fi
+
+echo "Please provide your name:"
+read -r candidateName
+
+# Slugify the candidate's name
+candidateSlug=$(echo "$candidateName" | \
+  tr '[:upper:]' '[:lower:]' | \
+  sed 's/ /-/g' | \
+  sed 's/[^a-z0-9-]//g' | \
+  sed 's/--*/-/g' | \
+  sed 's/^-//' | sed 's/-$//')
+
+git bundle create "/tmp/$candidateSlug.bundle" --all && \
+  tar -czvf "$candidateSlug.tar.gz" "/tmp/$candidateSlug.bundle" && \
+  rm "/tmp/$candidateSlug.bundle"
+
+echo "Please submit the created $candidateSlug.tar.gz file"

@@ -1,0 +1,4 @@
+vendor
+*.override.*
+.env
+solution.tar.gz
