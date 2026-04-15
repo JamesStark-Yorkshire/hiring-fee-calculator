@@ -35,8 +35,16 @@ abstract class BaseTableRate implements RateInterface
         // If the loan amount is between the bands
         $fee = $this->linearInterpolationCalculator($amount, $this->getLower($amount), $this->getUpper($amount));
 
-        // Check if the fee can be divided by 5. If not, round up to the closer value that can be divided by 5
-        return (int)ceil($fee / 500) * 500;
+        // Check if the sum of the fee and the loan amount can be divided by 5. If not, round up to the closer value that can be divided by 5
+        $roundUpTo = 500;
+        $sum = $fee + $amount;
+        $diff = $sum % $roundUpTo;
+
+        if ($diff == 0) {
+            return $fee;
+        }
+
+        return $sum - $amount - $diff + $roundUpTo;
     }
 
     /**
